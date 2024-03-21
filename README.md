@@ -6,8 +6,8 @@ This is a workaround for Microsoft Dynamamics AX 2012 R3 kernel bug. Sometimes a
 2. Modify your SysSetupForm form according to description in job_FixControlPropertyBold_MRC  job.
 
 ### Discussion : 
-https://axforum.info/forums/showthread.php?p=440659#post440659
-https://axforum.info/forums/showthread.php?p=432392#post432392
+1. https://axforum.info/forums/showthread.php?p=440659#post440659
+2. https://axforum.info/forums/showthread.php?p=432392#post432392
 
 ## License
 The FixControlPropertyBold source code in this repo is available under the MIT license. See [License.txt](LICENSE.txt).
