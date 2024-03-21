@@ -1,0 +1,62 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: JOB
+
+; Microsoft Dynamics AX Job: job_FixControlPropertyBold_MRC выгружен
+; --------------------------------------------------------------------------------
+  JOBVERSION 1
+  
+  SOURCE #job_FixControlPropertyBold_MRC
+    #static void job_FixControlPropertyBold_MRC(Args _args)
+    #{
+    #    // пример кода новой кнопки для формы SysSetupForm, чтобы можно было через форму персонализации применять фикс к произвольной форме
+    #
+    #    /*
+    #    void clicked()
+    #    {
+    #        FormRun         locFormRun;
+    #        FixControlPropertyBold_MRC      fixControlPropertyBold_MRC;
+    #        Dialog          dialog;
+    #        DialogField     df;
+    #        int             millisec;
+    #        ;
+    #
+    #        super();
+    #
+    #        locFormRun = sysSetupForm.getFormRun();
+    #        if (!locFormRun)
+    #        {
+    #            warning(strFmt(@"Форма не найдена"));
+    #            return;
+    #        }
+    #
+    #        dialog = new Dialog(@"Исправить Bold свойства контролов", element);
+    #        df = dialog.addFieldValue(extendedTypeStr(Integer), 60, @"Повторять исправление через (сек.)", @"Выполнить исправление один раз и далее повторять через указанное число секунд");
+    #        if (dialog.run())
+    #        {
+    #            millisec = 1000 * df.value();
+    #        }
+    #        fixControlPropertyBold_MRC = FixControlPropertyBold_MRC::constructForm(locFormRun);
+    #        fixControlPropertyBold_MRC.parmSchedulleMilliSec(millisec);
+    #        fixControlPropertyBold_MRC.addAllCtrls();
+    #        fixControlPropertyBold_MRC.run();
+    #        info("Ok");
+    #    }
+    #
+    #    // иногда ядро глючит и шрифт в контролах на форме становится экстраболд а значения перестают влезать в контрол
+    #    // пытаемся это пофиксить (если форму нельзя переоткрыть то можно попробовать на открытой форме сделать)
+    #
+    #    // https://axforum.info/forums/showthread.php?p=432385
+    #    // https://dax.axforum.info/forums/showthread.php?t=53291&ysclid=ltztcnict87319117
+    #
+    #    // PKoz 20.03.2024
+    #    */
+    #}
+  ENDSOURCE
+  PROPERTIES
+    Origin              #{1BFF84DC-6DFF-466B-9290-2098D9A33212}
+  ENDPROPERTIES
+  
+
+***Element: END

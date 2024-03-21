@@ -1,0 +1,248 @@
+﻿Exportfile for AOT version 1.0 or later
+Formatversion: 1
+
+***Element: CLS
+
+; Microsoft Dynamics AX Class: FixControlPropertyBold_MRC выгружен
+; --------------------------------------------------------------------------------
+  CLSVERSION 1
+  
+  CLASS #FixControlPropertyBold_MRC
+    PROPERTIES
+      Name                #FixControlPropertyBold_MRC
+      Origin              #{ACCEC24F-03AB-42EE-AE33-D9124016AE4E}
+      LegacyId            #57098
+    ENDPROPERTIES
+    
+    METHODS
+      SOURCE #addAllCtrls
+        #public void addAllCtrls()
+        #{
+        #    FormDesign      formDesign;
+        #    ;
+        #
+        #    formDesign = formrun.design();
+        #    this.collectCtrlRecursive(formDesign);
+        #}
+      ENDSOURCE
+      SOURCE #addCtrl
+        #public void addCtrl(FormControl _parm)
+        #{
+        #    ;
+        #
+        #    if (_parm)
+        #    {
+        #        controls.insert(_parm.id(), _parm.name());
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #classDeclaration
+        #// https://axforum.info/forums/showthread.php?p=440659#post440659
+        #// https://dax.axforum.info/forums/showthread.php?t=53291&ysclid=ltztcnict87319117
+        #
+        #// FixControlPropertyBold_MRC "Исправить баг ядра - шрифты на форме становятся жирными и не помешаются в контролах", PKoz 21.03.2024
+        #
+        #public class FixControlPropertyBold_MRC
+        #{
+        #    Map         controls;
+        #    FormRun     formRun;
+        #    int         schedulleMilliSec;
+        #    int         timeOutHandle;
+        #}
+      ENDSOURCE
+      SOURCE #collectCtrlRecursive
+        #private void collectCtrlRecursive(Object _ctrl)
+        #{
+        #    FormControl     childControl;
+        #    int     i;
+        #    ;
+        #
+        #    if (_ctrl.handle() == classNum(FormDesign) ||
+        #        (
+        #            this.hasObjectMethod(_ctrl, methodStr(FormGroupControl, isContainer)) &&
+        #            _ctrl.isContainer() &&
+        #            this.hasObjectMethod(_ctrl, methodStr(FormGroupControl, controlCount)) &&
+        #            this.hasObjectMethod(_ctrl, methodStr(FormGroupControl, controlNum))
+        #        )
+        #       )
+        #    {
+        #        for (i = 1; i <= _ctrl.controlCount(); i++)
+        #        {
+        #            childControl = _ctrl.controlNum(i);
+        #            this.collectCtrlRecursive(childControl);
+        #        }
+        #    }
+        #    else
+        #    {
+        #        if (this.hasObjectMethod(_ctrl, methodStr(FormGroupControl, bold)))
+        #        {
+        #            this.addCtrl(_ctrl);
+        #        }
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #hasObjectMethod
+        #private boolean hasObjectMethod(Object _object, str _methodName, boolean _useHandle = true)
+        #{
+        #    ClassId         classId;
+        #    SysDictClass    sysDictClass;
+        #
+        #    boolean         ret;
+        #    ;
+        #
+        #    if (_object && _methodName)
+        #    {
+        #        classId = _useHandle ? _object.handle() : classIdGet(_object);
+        #
+        #        if (classId)
+        #        {
+        #            sysDictClass= new SysDictClass(classId);
+        #
+        #            if (sysDictClass)
+        #            {
+        #                ret = sysDictClass.hasObjectMethod(_methodName);
+        #            }
+        #        }
+        #    }
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #init
+        #private void init()
+        #{
+        #    controls = new Map(Types::Integer, Types::String);
+        #}
+      ENDSOURCE
+      SOURCE #new
+        #protected void new()
+        #{
+        #}
+      ENDSOURCE
+      SOURCE #parmFormRun
+        #private FormRun parmFormRun(FormRun _parm = formRun)
+        #{
+        #    ;
+        #
+        #    formRun = _parm;
+        #
+        #    return formRun;
+        #}
+        #
+      ENDSOURCE
+      SOURCE #parmSchedulleMilliSec
+        #public int parmSchedulleMilliSec(int _parm = schedulleMilliSec)
+        #{
+        #    ;
+        #
+        #    schedulleMilliSec = _parm;
+        #
+        #    return schedulleMilliSec;
+        #}
+        #
+      ENDSOURCE
+      SOURCE #run
+        #public void run()
+        #{
+        #    FormDesign      formDesign;
+        #    FormControl     ctrl;
+        #    MapEnumerator   me;
+        #    int             ctrlId;
+        #    ;
+        #
+        #    if (!formRun || formRun.closed())
+        #    {
+        #        this.schedulle(0);
+        #        return;
+        #    }
+        #
+        #    formRun.lock();
+        #
+        #    try
+        #    {
+        #        formDesign = formRun.design();
+        #        me = controls.getEnumerator();
+        #        while (me.moveNext())
+        #        {
+        #            ctrlId = me.currentKey();
+        #            ctrl = formDesign.control(ctrlId);
+        #            if (ctrl)
+        #            {
+        #                this.update(ctrl);
+        #            }
+        #        }
+        #        formRun.unlock();
+        #    }
+        #    catch
+        #    {
+        #        formRun.unlock();
+        #    }
+        #
+        #    if (schedulleMilliSec)
+        #    {
+        #        this.schedulle();
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #schedulle
+        #private void schedulle(int _milliseconds = schedulleMilliSec)
+        #{
+        #    ;
+        #
+        #    schedulleMilliSec = _milliseconds;
+        #
+        #    if (schedulleMilliSec)
+        #    {
+        #        timeOutHandle = infolog.addTimeOut(this, methodStr(FixControlPropertyBold_MRC, run), schedulleMilliSec, true);
+        #        infolog.globalCache().set(classStr(FixControlPropertyBold_MRC), timeOutHandle, this, false);
+        #    }
+        #    else
+        #    {
+        #        infolog.globalCache().remove(classStr(FixControlPropertyBold_MRC), timeOutHandle);
+        #        infolog.removeTimeOut(timeOutHandle);
+        #    }
+        #}
+      ENDSOURCE
+      SOURCE #update
+        #private void update(Object _ctrl)
+        #{
+        #    int                 currentValue;
+        #    ReportControlBold   tempValue;
+        #    ;
+        #
+        #    currentValue = _ctrl.bold();
+        #    tempValue = currentValue ? 0 : 1; // tempValue - какое-то допустимое значение енума ReportControlBold, не равное currentValue
+        #
+        #    // явно меняем значение свойства bold, а затем возвращаем оригинальное значение, заставляя kernel корректно перерисовать контрол
+        #    _ctrl.bold(tempValue);
+        #    _ctrl.bold(currentValue);
+        #}
+      ENDSOURCE
+      SOURCE #construct
+        #private static FixControlPropertyBold_MRC construct()
+        #{
+        #    FixControlPropertyBold_MRC      ret;
+        #    ;
+        #
+        #    ret = new FixControlPropertyBold_MRC();
+        #    ret.init();
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+      SOURCE #constructForm
+        #static public FixControlPropertyBold_MRC constructForm(FormRun _formRun)
+        #{
+        #    FixControlPropertyBold_MRC      ret;
+        #    ;
+        #
+        #    ret = FixControlPropertyBold_MRC::construct();
+        #    ret.parmFormRun(_formRun);
+        #
+        #    return ret;
+        #}
+      ENDSOURCE
+    ENDMETHODS
+  ENDCLASS
+
+***Element: END
